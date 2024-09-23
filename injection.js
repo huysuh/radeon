@@ -225,7 +225,7 @@ function modifyCode(text) {
       ctx$3.font = font;
 
       ctx$3.textAlign = 'left';
-      const radeonText = "Radeon " + calculateBPS() + " BPS";
+      const radeonText = "Radeon " + bps.toFixed(2) + " BPS";
       const radeonPosX = padding;
       const radeonPosY = 25;
 
@@ -626,21 +626,20 @@ function modifyCode(text) {
     return Math.sqrt(dx * dx + dy * dy + dz * dz);
   }
 
-  // Function to calculate blocks per second
-  function calculateBPS() {
+  function getPlayerBPS(callback) {
     const startPos = player$1.pos.clone(); // Capture starting position
     const startTime = Date.now();
 
     setTimeout(() => {
-      const endPos = player$1.pos.clone(); // Capture position after time interval
+      const endPos = player$1.pos.clone(); // Capture position after 1 second
       const endTime = Date.now();
 
       const distance = calculateDistance(startPos, endPos); // Calculate distance traveled
       const timeElapsed = (endTime - startTime) / 1000; // Time in seconds
 
-      const blocksPerSecond = distance / timeElapsed; // Calculate BPS
-      console.log(`Blocks per second: ${blocksPerSecond}`);
-    }, 1000); // Set to 1 second interval (1000ms)
+      const bps = distance / timeElapsed; // Calculate blocks per second (BPS)
+      callback(bps); // Return BPS via callback
+    }, 1000); // Set interval to 1 second (1000 ms)
   }
 
   // COMMANDS
