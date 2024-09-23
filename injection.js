@@ -990,13 +990,12 @@ function modifyCode(text) {
 			// Fly
       let flyvalue, flyvert, flybypass;
       let flyTicks = 0;
-      let startTime = null;  // Declare startTime outside to preserve it across ticks
       const fly = new Module("Fly", function(callback) {
           if (callback) {
 
               tickLoop["Fly"] = function() {
-                  const currentTime = Date.now();
-                  const elapsedTime = currentTime - startTime; // Calculate elapsed time
+
+                  flyTicks = flyTicks + 1;
 
                   const currentSpeed = flyvalue * (1.5 - (flyTicks) / 20)
                   if (currentSpeed < 0){
@@ -1008,10 +1007,9 @@ function modifyCode(text) {
 
                   player$1.motion.x = dir.x;
                   player$1.motion.z = dir.z;
-                  player$1.motion.y = keyPressedDump("space") ? flyvert[1] : (keyPressedDump("shift") ? -flyvert[1] : 0);
+                  player$1.motion.y = keyPressedDump("space") ? flyvert[1] : (keyPressedDump("shift") ? -flyvert[1] : -0.05);
               };
           } else {
-              delete tickLoop["Fly"];
               flyTicks = 0;
               if (player$1) {
                   player$1.motion.x = Math.max(Math.min(player$1.motion.x, 0.3), -0.3);
@@ -1022,7 +1020,7 @@ function modifyCode(text) {
 
       flybypass = fly.addoption("Bypass", Boolean, true);
       flyvalue = fly.addoption("Speed", Number, 2);
-      flyvert = fly.addoption("Vertical", Number, 0.7);
+      flyvert = fly.addoption("Vertical", Number, 0.2);
 
 
 			new Module("InvWalk", function() {});
