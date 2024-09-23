@@ -208,12 +208,12 @@ function modifyCode(text) {
     `
     if (ctx$3 && enabledModules["TextGUI"]) {
         const colorOffset = (Date.now() / 4000);
-        const posX = 15; // X position of the text
-        const posY = 17; // Y position of the text
+        const posX = 15;
+        const posY = 17;
 
         ctx$3.fillStyle = '#ffffff';
         ctx$3.font = "20px Arial";
-        ctx$3.fillText("Arceus", posX, posY); // Render "Arceus" at the top-left
+        ctx$3.fillText("Radeon", posX, posY);
 
         let offset = 0;
         let stringList = [];
@@ -228,10 +228,12 @@ function modifyCode(text) {
             return compA < compB ? 1 : -1;
         });
 
-        // Render the modules on the right
-        let modulePosX = 500;  // Adjust this value for positioning the modules to the right
+        const canvasWidth = ctx$3.canvas.width;
         for (const module of stringList) {
             offset++;
+            const moduleTextWidth = ctx$3.measureText(module).width;
+            const modulePosX = canvasWidth - moduleTextWidth - 20;
+
             ctx$3.fillStyle = '#ffffff';
             ctx$3.font = "15px Arial";
             ctx$3.fillText(module, modulePosX, posY + 20 + ((textguisize[1] + 3) * offset));
