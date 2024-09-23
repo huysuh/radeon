@@ -261,27 +261,6 @@ function modifyCode(text) {
           ctx$3.fillText(module, posX, posY);
         });
       }
-
-      // Draw ClickGUI (new code)
-      if (enabledModules["ClickGUI"]) {
-        const buttonWidth = 200;
-        const buttonHeight = 36;
-        let posY = 100; // Start ClickGUI a bit lower
-
-        ctx$3.textAlign = 'center';
-
-        for (const [name, module] of Object.entries(modules)) {
-          // Draw button rectangle
-          ctx$3.fillStyle = module.enabled ? "rgba(0, 150, 0, 0.8)" : "rgba(150, 0, 0, 0.8)";
-          ctx$3.fillRect(padding, posY, buttonWidth, buttonHeight);
-
-          // Draw module name
-          ctx$3.fillStyle = "#FFFFFF";
-          ctx$3.fillText(name + (module.enabled ? " [ON]" : " [OFF]"), padding + buttonWidth / 2, posY + buttonHeight / 2);
-
-          posY += buttonHeight + padding; // Move to the next button position
-        }
-      }
     }
     `,
   );
@@ -985,14 +964,6 @@ function modifyCode(text) {
 				}
 				return new Vector3$1(0, 0, 0);
 			}
-
-			// ClickGUI
-			new Module("ClickGUI", function(callback) {
-      if (callback) {
-        openClickGUI();
-      } else {
-        closeClickGUI();
-      }
     });
 
 
