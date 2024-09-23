@@ -202,31 +202,6 @@ function modifyCode(text) {
 	`,
   );
 
-  function calculateDistance(pos1, pos2) {
-    const dx = pos2.x - pos1.x;
-    const dy = pos2.y - pos1.y;
-    const dz = pos2.z - pos1.z;
-    return Math.sqrt(dx * dx + dy * dy + dz * dz);
-  }
-
-  function getPlayerBPS(callback) {
-    const startPos = player$1.pos.clone(); // Capture starting position
-    const startTime = Date.now();
-
-    setTimeout(() => {
-      const endPos = player$1.pos.clone(); // Capture position after 1 second
-      const endTime = Date.now();
-
-      const distance = calculateDistance(startPos, endPos); // Calculate distance traveled
-      const timeElapsed = (endTime - startTime) / 1000; // Time in seconds
-
-      const bps = distance / timeElapsed; // Calculate blocks per second (BPS)
-      callback(bps); // Return BPS via callback
-    }, 1000); // Set interval to 1 second (1000 ms)
-  }
-
-  const radeonText = "Radeon client niggas full anticheat disabler edition";
-
   addReplacement(
     "(this.drawSelectedItemStack(),this.drawHintBox())",
     `
@@ -250,13 +225,7 @@ function modifyCode(text) {
       ctx$3.font = font;
 
       ctx$3.textAlign = 'left';
-
-      const watermark = "Radeon client niggas full anticheat disabler edition"
-
-      getPlayerBPS().then(bps => {
-          radeonText = watermark + " " + bps.toFixed(2) + " BPS";
-          console.log(radeonText);  // Display the text or update your UI element
-      });
+      const radeonText = "Radeon client niggas full anticheat disabler edition";
       const radeonPosX = padding;
       const radeonPosY = 25;
 
