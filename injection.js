@@ -1054,7 +1054,7 @@ function modifyCode(text) {
 						player$1.motion.x = dir.x;
 						player$1.motion.z = dir.z;
 						if (player$1.motion.y < 0 && player$1.onGround == false){
-						  player$1.motion.y = player$1.motion.y * 1.5
+						  player$1.motion.y = player$1.motion.y * 1.25
 						} else {
 						  player$1.motion.y = player$1.onGround && dir.length() > 0 && speedauto[1] ? speedjump[1] : player$1.motion.y;
 						}
