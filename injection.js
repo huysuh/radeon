@@ -208,45 +208,49 @@ function modifyCode(text) {
     if (ctx$3 && enabledModules["TextGUI"]) {
       const canvasWidth = ctx$3.canvas.width;
       const canvasHeight = ctx$3.canvas.height;
-      const colorOffset = (Date.now() / 4000);
-      const posY = 25;
-      const shadowOffsetX = -2;
-      const shadowOffsetY = -2;
-      const shadowColor = '#606060';
+      const shadowOffsetX = 1;
+      const shadowOffsetY = 1;
+      const shadowColor = 'rgba(0, 0, 0, 0.5)';
+      const textColor = '#ffffff';
+      const padding = 10;
 
-      // Radeon text
-      ctx$3.font = "20px Arial";
+      // Draw Radeon text (left-aligned)
+      ctx$3.font = "bold 20px Arial";
+      ctx$3.textAlign = 'left';
       const radeonText = "Radeon";
-      const radeonWidth = ctx$3.measureText(radeonText).width;
-      const radeonPosX = canvasWidth - radeonWidth - 10;
+      const radeonPosX = padding;
+      const radeonPosY = 25;
 
+      // Draw shadow for Radeon text
       ctx$3.fillStyle = shadowColor;
-      ctx$3.fillText(radeonText, radeonPosX - shadowOffsetX, posY - shadowOffsetY);
-      ctx$3.fillStyle = '#ffffff';
-      ctx$3.fillText(radeonText, radeonPosX, posY);
+      ctx$3.fillText(radeonText, radeonPosX + shadowOffsetX, radeonPosY + shadowOffsetY);
 
-      // Module list
-      let stringList = [];
+      // Draw Radeon text
+      ctx$3.fillStyle = textColor;
+      ctx$3.fillText(radeonText, radeonPosX, radeonPosY);
+
+      // Prepare module list
+      let moduleList = [];
       for (const [module, value] of Object.entries(enabledModules)) {
         if (!value || module == "TextGUI") continue;
-        stringList.push(module);
+        moduleList.push(module);
       }
 
-      ctx$3.font = "15px Arial";
+      // Draw module names (right-aligned)
+      ctx$3.font = "16px Arial";
+      ctx$3.textAlign = 'right';
 
-      // Calculate maximum module width
-      const maxModuleWidth = Math.max(...stringList.map(module => ctx$3.measureText(module).width));
+      moduleList.forEach((module, index) => {
+        const posY = radeonPosY + 25 + (index * 22); // Start below Radeon text
+        const posX = canvasWidth - padding;
 
-      stringList.sort((a, b) => ctx$3.measureText(b).width - ctx$3.measureText(a).width);
-
-      stringList.forEach((module, index) => {
-        const modulePosY = posY + 30 + ((textguisize[1] + 3) * index);
-        const modulePosX = canvasWidth - maxModuleWidth - 10;
-
+        // Draw shadow
         ctx$3.fillStyle = shadowColor;
-        ctx$3.fillText(module, modulePosX - shadowOffsetX, modulePosY - shadowOffsetY);
-        ctx$3.fillStyle = '#ffffff';
-        ctx$3.fillText(module, modulePosX, modulePosY);
+        ctx$3.fillText(module, posX + shadowOffsetX, posY + shadowOffsetY);
+
+        // Draw text
+        ctx$3.fillStyle = textColor;
+        ctx$3.fillText(module, posX, posY);
       });
     }
     `,
