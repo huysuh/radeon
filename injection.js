@@ -961,16 +961,6 @@ function modifyCode(text) {
 				}
 				return new Vector3$1(0, 0, 0);
 			}
-
-			// ClickGUI
-			new Module("ClickGUI", function(callback) {
-      if (callback) {
-        // Initialize ClickGUI logic here
-        // You can use canvas or HTML elements to render the GUI
-        openClickGUI();
-      } else {
-        closeClickGUI();
-      }
     });
 
 
