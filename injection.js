@@ -964,20 +964,20 @@ function modifyCode(text) {
 
 			// Fly
       let flyvalue, flyvert, flybypass;
+      let startTime = null;  // Declare startTime outside to preserve it across ticks
       const fly = new Module("Fly", function(callback) {
           if (callback) {
-              let ticks = 0;
-              const startTime = Date.now();
-              const maxBoostTime = 1000;
+              const maxBoostTime = 1000; // Time in ms to apply the speed boost (1 second)
 
               tickLoop["Fly"] = function() {
-                  ticks++;
                   const currentTime = Date.now();
                   const elapsedTime = currentTime - startTime; // Calculate elapsed time
 
+                  // Calculate speed boost: starts at 1.5x flyvalue, decreases to 1x flyvalue over 1 second
                   let speedMultiplier = 1.5 - Math.min(elapsedTime / maxBoostTime, 1) * 0.5;
                   const currentSpeed = flyvalue * speedMultiplier;
 
+                  // Get movement direction with modified speed
                   const dir = getMoveDirection(currentSpeed);
 
                   player$1.motion.x = dir.x;
@@ -986,6 +986,7 @@ function modifyCode(text) {
               };
           } else {
               delete tickLoop["Fly"];
+              startTime = Date.now();
               if (player$1) {
                   player$1.motion.x = Math.max(Math.min(player$1.motion.x, 0.3), -0.3);
                   player$1.motion.z = Math.max(Math.min(player$1.motion.z, 0.3), -0.3);
@@ -993,9 +994,9 @@ function modifyCode(text) {
           }
       });
 
-flybypass = fly.addoption("Bypass", Boolean, true);
-flyvalue = fly.addoption("Speed", Number, 2);
-flyvert = fly.addoption("Vertical", Number, 0.7);
+      flybypass = fly.addoption("Bypass", Boolean, true);
+      flyvalue = fly.addoption("Speed", Number, 2);
+      flyvert = fly.addoption("Vertical", Number, 0.7);
 
 
 			new Module("InvWalk", function() {});
