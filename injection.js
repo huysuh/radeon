@@ -208,51 +208,53 @@ function modifyCode(text) {
     if (ctx$3 && enabledModules["TextGUI"]) {
       const canvasWidth = ctx$3.canvas.width;
       const canvasHeight = ctx$3.canvas.height;
+      const padding = 10;
+      const font = "15px Arial";
+
+      const customColor = '#9a2020';
+
+      const darkenColor = (color, amount) => {
+        return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) - amount)).toString(16)).substr(-2));
+      };
+
+      const textColor = '#FFFFFF';
+      const shadowColor = darkenColor(customColor, 100);
       const shadowOffsetX = 1;
       const shadowOffsetY = 1;
-      const shadowColor = 'rgba(0, 0, 0, 0.5)';
-      const textColor = '#ffffff';
-      const padding = 10;
-      const font = "15px Arial";  // Consistent font for all text
 
       ctx$3.font = font;
 
-      // Draw Radeon text (left-aligned)
       ctx$3.textAlign = 'left';
       const radeonText = "Radeon";
       const radeonPosX = padding;
       const radeonPosY = 25;
 
-      // Draw shadow for Radeon text
       ctx$3.fillStyle = shadowColor;
       ctx$3.fillText(radeonText, radeonPosX + shadowOffsetX, radeonPosY + shadowOffsetY);
 
-      // Draw Radeon text
-      ctx$3.fillStyle = textColor;
-      ctx$3.fillText(radeonText, radeonPosX, radeonPosY);
+      ctx$3.fillStyle = customColor;
+      ctx$3.fillText(radeonText[0], radeonPosX, radeonPosY);
 
-      // Prepare and sort module list
+      ctx$3.fillStyle = textColor;
+      ctx$3.fillText(radeonText.slice(1), radeonPosX + ctx$3.measureText(radeonText[0]).width, radeonPosY);
+
       let moduleList = [];
       for (const [module, value] of Object.entries(enabledModules)) {
         if (!value || module == "TextGUI") continue;
         moduleList.push(module);
       }
 
-      // Sort modules by text width (longest to shortest)
       moduleList.sort((a, b) => ctx$3.measureText(b).width - ctx$3.measureText(a).width);
 
-      // Draw module names (right-aligned)
       ctx$3.textAlign = 'right';
 
       moduleList.forEach((module, index) => {
         const posY = radeonPosY + 25 + (index * 18); // Adjust vertical spacing as needed
         const posX = canvasWidth - padding;
 
-        // Draw shadow
         ctx$3.fillStyle = shadowColor;
         ctx$3.fillText(module, posX + shadowOffsetX, posY + shadowOffsetY);
 
-        // Draw text
         ctx$3.fillStyle = textColor;
         ctx$3.fillText(module, posX, posY);
       });
