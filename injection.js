@@ -967,6 +967,7 @@ function modifyCode(text) {
       let startTime = null;  // Declare startTime outside to preserve it across ticks
       const fly = new Module("Fly", function(callback) {
           if (callback) {
+              startTime = Date.now();  // Set the start time only when fly is first enabled
               const maxBoostTime = 1000; // Time in ms to apply the speed boost (1 second)
 
               tickLoop["Fly"] = function() {
@@ -986,7 +987,7 @@ function modifyCode(text) {
               };
           } else {
               delete tickLoop["Fly"];
-              startTime = Date.now();
+              startTime = null;  // Reset startTime when fly is disabled
               if (player$1) {
                   player$1.motion.x = Math.max(Math.min(player$1.motion.x, 0.3), -0.3);
                   player$1.motion.z = Math.max(Math.min(player$1.motion.z, 0.3), -0.3);
