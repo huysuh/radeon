@@ -225,7 +225,7 @@ function modifyCode(text) {
       ctx$3.font = font;
 
       ctx$3.textAlign = 'left';
-      const radeonText = "Radeon " + calculateBps() + " BPS";
+      const radeonText = "Radeon " + calculateBPS() + " BPS";
       const radeonPosX = padding;
       const radeonPosY = 25;
 
