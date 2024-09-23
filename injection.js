@@ -202,21 +202,28 @@ function modifyCode(text) {
 	`,
   );
 
-  // TEXT GUI
   addReplacement(
     "(this.drawSelectedItemStack(),this.drawHintBox())",
     `
     if (ctx$3 && enabledModules["TextGUI"]) {
         const colorOffset = (Date.now() / 4000);
-        const posX = 15;
+        let posX = 15
         const posY = 17;
 
-        ctx$3.fillStyle = '#ffffff';
+        const shadowOffsetX = -2;
+        const shadowOffsetY = -2;
+        const shadowColor = '#a5a5a5';
+
+        ctx$3.fillStyle = shadowColor;
         ctx$3.font = "20px Arial";
+        ctx$3.fillText("Radeon", posX + shadowOffsetX, posY + shadowOffsetY);
+
+        ctx$3.fillStyle = '#ffffff';
         ctx$3.fillText("Radeon", posX, posY);
 
         let offset = 0;
         let stringList = [];
+
         for (const [module, value] of Object.entries(enabledModules)) {
             if (!value || module == "TextGUI") continue;
             stringList.push(module);
@@ -228,14 +235,18 @@ function modifyCode(text) {
             return compA < compB ? 1 : -1;
         });
 
+        ctx$3.fillStyle = shadowColor;
+        ctx$3.font = "15px Arial";
+
         const canvasWidth = ctx$3.canvas.width;
         for (const module of stringList) {
             offset++;
             const moduleTextWidth = ctx$3.measureText(module).width;
-            const modulePosX = canvasWidth - moduleTextWidth - 20;
+            const modulePosX = canvasWidth - moduleTextWidth - 10;
+
+            ctx$3.fillText(module, modulePosX + shadowOffsetX, posY + 20 + ((textguisize[1] + 3) * offset) + shadowOffsetY);
 
             ctx$3.fillStyle = '#ffffff';
-            ctx$3.font = "15px Arial";
             ctx$3.fillText(module, modulePosX, posY + 20 + ((textguisize[1] + 3) * offset));
         }
     }
