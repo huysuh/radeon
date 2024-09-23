@@ -225,7 +225,7 @@ function modifyCode(text) {
       ctx$3.font = font;
 
       ctx$3.textAlign = 'left';
-      const radeonText = "Radeon";
+      const radeonText = "Radeon " + calculateBps() + " BPS";
       const radeonPosX = padding;
       const radeonPosY = 25;
 
@@ -618,6 +618,31 @@ function modifyCode(text) {
     true,
   );
 
+  // Function to calculate Euclidean distance between two 3D points
+  function calculateDistance(pos1, pos2) {
+    const dx = pos2.x - pos1.x;
+    const dy = pos2.y - pos1.y;
+    const dz = pos2.z - pos1.z;
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+  }
+
+  // Function to calculate blocks per second
+  function calculateBPS() {
+    const startPos = player$1.pos.clone(); // Capture starting position
+    const startTime = Date.now();
+
+    setTimeout(() => {
+      const endPos = player$1.pos.clone(); // Capture position after time interval
+      const endTime = Date.now();
+
+      const distance = calculateDistance(startPos, endPos); // Calculate distance traveled
+      const timeElapsed = (endTime - startTime) / 1000; // Time in seconds
+
+      const blocksPerSecond = distance / timeElapsed; // Calculate BPS
+      console.log(`Blocks per second: ${blocksPerSecond}`);
+    }, 1000); // Set to 1 second interval (1000ms)
+  }
+
   // COMMANDS
   addReplacement(
     "tryExecuteClientside(et,_))return;",
@@ -964,19 +989,19 @@ function modifyCode(text) {
 
 			// Fly
       let flyvalue, flyvert, flybypass;
+      let flyTicks = 0;
       let startTime = null;  // Declare startTime outside to preserve it across ticks
       const fly = new Module("Fly", function(callback) {
           if (callback) {
-              startTime = Date.now();  // Set the start time only when fly is first enabled
-              const maxBoostTime = 1000; // Time in ms to apply the speed boost (1 second)
 
               tickLoop["Fly"] = function() {
                   const currentTime = Date.now();
                   const elapsedTime = currentTime - startTime; // Calculate elapsed time
 
-                  // Calculate speed boost: starts at 1.5x flyvalue, decreases to 1x flyvalue over 1 second
-                  let speedMultiplier = 1.5 - Math.min(elapsedTime / maxBoostTime, 1) * 0.5;
-                  const currentSpeed = flyvalue * speedMultiplier;
+                  const currentSpeed = flyvalue * (1.5 - (flyTicks) / 20)
+                  if (currentSpeed < 0){
+                    currentSpeed = 0;
+                  }
 
                   // Get movement direction with modified speed
                   const dir = getMoveDirection(currentSpeed);
@@ -987,7 +1012,7 @@ function modifyCode(text) {
               };
           } else {
               delete tickLoop["Fly"];
-              startTime = null;  // Reset startTime when fly is disabled
+              flyTicks = 0;
               if (player$1) {
                   player$1.motion.x = Math.max(Math.min(player$1.motion.x, 0.3), -0.3);
                   player$1.motion.z = Math.max(Math.min(player$1.motion.z, 0.3), -0.3);
