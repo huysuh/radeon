@@ -996,13 +996,12 @@ function modifyCode(text) {
 
                   flyTicks = flyTicks + 1;
 
-                  const currentSpeed = flyvalue * (1.5 - (flyTicks) / 20)
-                  if (currentSpeed < 0){
-                    currentSpeed = 0;
-                  }
-
                   // Get movement direction with modified speed
-                  const dir = getMoveDirection(currentSpeed);
+                  let flyspeed = flyvalue - (flyTicks / 20)
+                  if (flyspeed < 0){
+                    flyspeed = 0
+                  }
+                  const dir = getMoveDirection(flyspeed * 1.5);
 
                   player$1.motion.x = dir.x;
                   player$1.motion.z = dir.z;
@@ -1018,7 +1017,7 @@ function modifyCode(text) {
       });
 
       flybypass = fly.addoption("Bypass", Boolean, true);
-      flyvalue = fly.addoption("Speed", Number, 2);
+      flyvalue = fly.addoption("Speed", Number, 0.4);
       flyvert = fly.addoption("Vertical", Number, 0.2);
 
 
