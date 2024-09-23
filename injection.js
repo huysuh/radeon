@@ -225,7 +225,7 @@ function modifyCode(text) {
       ctx$3.font = font;
 
       ctx$3.textAlign = 'left';
-      const radeonText = "Radeon " + bps.toFixed(2) + " BPS";
+      const radeonText = "Radeon";
       const radeonPosX = padding;
       const radeonPosY = 25;
 
@@ -618,30 +618,6 @@ function modifyCode(text) {
     true,
   );
 
-  // Function to calculate Euclidean distance between two 3D points
-  function calculateDistance(pos1, pos2) {
-    const dx = pos2.x - pos1.x;
-    const dy = pos2.y - pos1.y;
-    const dz = pos2.z - pos1.z;
-    return Math.sqrt(dx * dx + dy * dy + dz * dz);
-  }
-
-  function getPlayerBPS(callback) {
-    const startPos = player$1.pos.clone(); // Capture starting position
-    const startTime = Date.now();
-
-    setTimeout(() => {
-      const endPos = player$1.pos.clone(); // Capture position after 1 second
-      const endTime = Date.now();
-
-      const distance = calculateDistance(startPos, endPos); // Calculate distance traveled
-      const timeElapsed = (endTime - startTime) / 1000; // Time in seconds
-
-      const bps = distance / timeElapsed; // Calculate blocks per second (BPS)
-      callback(bps); // Return BPS via callback
-    }, 1000); // Set interval to 1 second (1000 ms)
-  }
-
   // COMMANDS
   addReplacement(
     "tryExecuteClientside(et,_))return;",
@@ -987,39 +963,31 @@ function modifyCode(text) {
 			}
 
 			// Fly
-      let flyvalue, flyvert, flybypass;
-      let flyTicks = 0;
-      const fly = new Module("Fly", function(callback) {
-          if (callback) {
-
-              tickLoop["Fly"] = function() {
-
-                  flyTicks = flyTicks + 1;
-
-                  // Get movement direction with modified speed
-                  let flyspeed = flyvalue - (flyTicks / 20)
-                  if (flyspeed < 0){
-                    flyspeed = 0
-                  }
-                  const dir = getMoveDirection(flyspeed * 1.5);
-
-                  player$1.motion.x = dir.x;
-                  player$1.motion.z = dir.z;
-                  player$1.motion.y = keyPressedDump("space") ? flyvert[1] : (keyPressedDump("shift") ? -flyvert[1] : -0.05);
-              };
-          } else {
-              flyTicks = 0;
-              if (player$1) {
-                  player$1.motion.x = Math.max(Math.min(player$1.motion.x, 0.3), -0.3);
-                  player$1.motion.z = Math.max(Math.min(player$1.motion.z, 0.3), -0.3);
-              }
-          }
-      });
-
-      flybypass = fly.addoption("Bypass", Boolean, true);
-      flyvalue = fly.addoption("Speed", Number, 0.4);
-      flyvert = fly.addoption("Vertical", Number, 0.2);
-
+			let flyvalue, flyvert, flybypass;
+			const fly = new Module("Fly", function(callback) {
+				if (callback) {
+					let ticks = 0;
+					tickLoop["Fly"] = function() {
+						ticks++;
+						let fflyyyy = 0.39 - (ticks++ / 40)
+						if (fflyyyy < 0) { fflyyyy = 0}
+						const dir = getMoveDirection(fflyyyy);
+						player$1.motion.x = dir.x;
+						player$1.motion.z = dir.z;
+						player$1.motion.y = keyPressedDump("space") ? flyvert[1] : (keyPressedDump("shift") ? -flyvert[1] : 0);
+					};
+				}
+				else {
+					delete tickLoop["Fly"];
+					if (player$1) {
+						player$1.motion.x = Math.max(Math.min(player$1.motion.x, 0.3), -0.3);
+						player$1.motion.z = Math.max(Math.min(player$1.motion.z, 0.3), -0.3);
+					}
+				}
+			});
+			flybypass = fly.addoption("Bypass", Boolean, true);
+			flyvalue = fly.addoption("Speed", Number, 2);
+			flyvert = fly.addoption("Vertical", Number, 0.7);
 
 			new Module("InvWalk", function() {});
 			new Module("KeepSprint", function() {});
@@ -1053,7 +1021,7 @@ function modifyCode(text) {
 						player$1.motion.x = dir.x;
 						player$1.motion.z = dir.z;
 						if (player$1.motion.y < 0 && player$1.onGround == false){
-						  player$1.motion.y = player$1.motion.y * 1.25
+						  player$1.motion.y = player$1.motion.y * 1.5
 						} else {
 						  player$1.motion.y = player$1.onGround && dir.length() > 0 && speedauto[1] ? speedjump[1] : player$1.motion.y;
 						}
