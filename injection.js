@@ -963,29 +963,40 @@ function modifyCode(text) {
 			}
 
 			// Fly
-			let flyvalue, flyvert, flybypass;
-			const fly = new Module("Fly", function(callback) {
-				if (callback) {
-					let ticks = 0;
-					tickLoop["Fly"] = function() {
-						ticks++;
-						const dir = getMoveDirection(0.39);
-						player$1.motion.x = dir.x;
-						player$1.motion.z = dir.z;
-						player$1.motion.y = keyPressedDump("space") ? flyvert[1] : (keyPressedDump("shift") ? -flyvert[1] : 0);
-					};
-				}
-				else {
-					delete tickLoop["Fly"];
-					if (player$1) {
-						player$1.motion.x = Math.max(Math.min(player$1.motion.x, 0.3), -0.3);
-						player$1.motion.z = Math.max(Math.min(player$1.motion.z, 0.3), -0.3);
-					}
-				}
-			});
-			flybypass = fly.addoption("Bypass", Boolean, true);
-			flyvalue = fly.addoption("Speed", Number, 2);
-			flyvert = fly.addoption("Vertical", Number, 0.7);
+      let flyvalue, flyvert, flybypass;
+      const fly = new Module("Fly", function(callback) {
+          if (callback) {
+              let ticks = 0;
+              const startTime = Date.now();
+              const maxBoostTime = 1000;
+
+              tickLoop["Fly"] = function() {
+                  ticks++;
+                  const currentTime = Date.now();
+                  const elapsedTime = currentTime - startTime; // Calculate elapsed time
+
+                  let speedMultiplier = 1.5 - Math.min(elapsedTime / maxBoostTime, 1) * 0.5;
+                  const currentSpeed = flyvalue * speedMultiplier;
+
+                  const dir = getMoveDirection(currentSpeed);
+
+                  player$1.motion.x = dir.x;
+                  player$1.motion.z = dir.z;
+                  player$1.motion.y = keyPressedDump("space") ? flyvert[1] : (keyPressedDump("shift") ? -flyvert[1] : 0);
+              };
+          } else {
+              delete tickLoop["Fly"];
+              if (player$1) {
+                  player$1.motion.x = Math.max(Math.min(player$1.motion.x, 0.3), -0.3);
+                  player$1.motion.z = Math.max(Math.min(player$1.motion.z, 0.3), -0.3);
+              }
+          }
+      });
+
+flybypass = fly.addoption("Bypass", Boolean, true);
+flyvalue = fly.addoption("Speed", Number, 2);
+flyvert = fly.addoption("Vertical", Number, 0.7);
+
 
 			new Module("InvWalk", function() {});
 			new Module("KeepSprint", function() {});
@@ -1018,7 +1029,7 @@ function modifyCode(text) {
 						lastjump = player$1.onGround ? 0 : lastjump;
 						player$1.motion.x = dir.x;
 						player$1.motion.z = dir.z;
-						if (player$1.motion.y < 0){
+						if (player$1.motion.y < 0 && player$1.onGround == false){
 						  player$1.motion.y = player$1.motion.y * 1.5
 						} else {
 						  player$1.motion.y = player$1.onGround && dir.length() > 0 && speedauto[1] ? speedjump[1] : player$1.motion.y;
