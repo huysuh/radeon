@@ -299,7 +299,7 @@ function modifyCode(text) {
 
               // Draw the setting name and value
               ctx$3.fillStyle = "#FFFFFF";
-              ctx$3.fillText('${settingName}: ${setting[1]}', padding + buttonWidth / 2, settingPosY + buttonHeight / 2);
+              ctx$3.fillText(settingName + ":" + setting[1], padding + buttonWidth / 2, settingPosY + buttonHeight / 2);
 
               // Store the position for setting interaction
               clickGUIModulePositions.push({name, settingName, x: padding + 20, y: settingPosY, width: buttonWidth - 20, height: buttonHeight});
