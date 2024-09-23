@@ -217,7 +217,7 @@ function modifyCode(text) {
         return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) - amount)).toString(16)).substr(-2));
       };
 
-      const textColor = '#FFFFFF';
+      const textColor = customColor;
       const shadowColor = darkenColor(customColor, 100);
       const shadowOffsetX = 1;
       const shadowOffsetY = 1;
@@ -235,7 +235,7 @@ function modifyCode(text) {
       ctx$3.fillStyle = customColor;
       ctx$3.fillText(radeonText[0], radeonPosX, radeonPosY);
 
-      ctx$3.fillStyle = textColor;
+      ctx$3.fillStyle = '#FFFFFF';
       ctx$3.fillText(radeonText.slice(1), radeonPosX + ctx$3.measureText(radeonText[0]).width, radeonPosY);
 
       let moduleList = [];
@@ -249,7 +249,7 @@ function modifyCode(text) {
       ctx$3.textAlign = 'right';
 
       moduleList.forEach((module, index) => {
-        const posY = radeonPosY + 25 + (index * 18); // Adjust vertical spacing as needed
+        const posY = radeonPosY + (index * 18);
         const posX = canvasWidth - padding;
 
         ctx$3.fillStyle = shadowColor;
