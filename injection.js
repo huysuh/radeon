@@ -211,7 +211,7 @@ function modifyCode(text) {
       const padding = 10;
       const font = "18px Arial";
 
-      const customColor = '#9a2020';
+      const customColor = '#17945a';
 
       const darkenColor = (color, amount) => {
         return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) - amount)).toString(16)).substr(-2));
@@ -225,7 +225,7 @@ function modifyCode(text) {
       ctx$3.font = font;
 
       ctx$3.textAlign = 'left';
-      const radeonText = "Radeon";
+      const radeonText = "Radeon client niggas full anticheat disabler edition";
       const radeonPosX = padding;
       const radeonPosY = 25;
 
