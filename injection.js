@@ -205,7 +205,7 @@ function modifyCode(text) {
   addReplacement(
     "(this.drawSelectedItemStack(),this.drawHintBox())",
     `
-    if (ctx$3 && (enabledModules["TextGUI"] || enabledModules["ClickGUI"])) {
+    if (ctx$3 && (enabledModules["TextGUI"])) {
       const canvasWidth = ctx$3.canvas.width;
       const canvasHeight = ctx$3.canvas.height;
       const padding = 10;
