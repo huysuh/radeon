@@ -225,6 +225,8 @@ function modifyCode(text) {
     }, 1000); // Set interval to 1 second (1000 ms)
   }
 
+  const radeonText = "Radeon client niggas full anticheat disabler edition";
+
   addReplacement(
     "(this.drawSelectedItemStack(),this.drawHintBox())",
     `
@@ -248,8 +250,13 @@ function modifyCode(text) {
       ctx$3.font = font;
 
       ctx$3.textAlign = 'left';
-      const radeonText = "Radeon client niggas full anticheat disabler edition";
-      radeonText = radeonText + " [" + bps.toFixed(2) + " BPS]"
+
+      const watermark = "Radeon client niggas full anticheat disabler edition"
+
+      getPlayerBPS().then(bps => {
+          radeonText = watermark + " " + bps.toFixed(2) + " BPS";
+          console.log(radeonText);  // Display the text or update your UI element
+      });
       const radeonPosX = padding;
       const radeonPosY = 25;
 
