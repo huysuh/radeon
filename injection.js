@@ -209,7 +209,7 @@ function modifyCode(text) {
       const canvasWidth = ctx$3.canvas.width;
       const canvasHeight = ctx$3.canvas.height;
       const padding = 10;
-      const font = "30px Arial";
+      const font = "18px Arial";
 
       const customColor = '#9a2020';
 
@@ -249,7 +249,7 @@ function modifyCode(text) {
       ctx$3.textAlign = 'right';
 
       moduleList.forEach((module, index) => {
-        const posY = radeonPosY + (index * 36);
+        const posY = radeonPosY + (index * 20);
         const posX = canvasWidth - padding;
 
         ctx$3.fillStyle = shadowColor;
@@ -961,8 +961,6 @@ function modifyCode(text) {
 				}
 				return new Vector3$1(0, 0, 0);
 			}
-    });
-
 
 			// Fly
 			let flyvalue, flyvert, flybypass;
