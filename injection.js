@@ -205,7 +205,7 @@ function modifyCode(text) {
   addReplacement(
     "(this.drawSelectedItemStack(),this.drawHintBox())",
     `
-    if (ctx$3 && (enabledModules["TextGUI"])) {
+    if (ctx$3 && (enabledModules["TextGUI"] || enabledModules["ClickGUI"])) {
       const canvasWidth = ctx$3.canvas.width;
       const canvasHeight = ctx$3.canvas.height;
       const padding = 10;
@@ -223,6 +223,12 @@ function modifyCode(text) {
       const shadowOffsetY = 1;
 
       ctx$3.font = font;
+
+      // Array to store the positions of the buttons for ClickGUI
+      let clickGUIModulePositions = [];
+
+      // Keep track of expanded modules
+      let expandedModules = window.expandedModules || {};
 
       // Draw TextGUI (existing code)
       if (enabledModules["TextGUI"]) {
@@ -261,9 +267,132 @@ function modifyCode(text) {
           ctx$3.fillText(module, posX, posY);
         });
       }
+
+      // Draw ClickGUI (new code)
+      if (enabledModules["ClickGUI"]) {
+        const buttonWidth = 200;
+        const buttonHeight = 36;
+        let posY = 100; // Start ClickGUI a bit lower
+
+        ctx$3.textAlign = 'center';
+
+        for (const [name, module] of Object.entries(modules)) {
+          // Draw button rectangle
+          ctx$3.fillStyle = module.enabled ? "rgba(0, 150, 0, 0.8)" : "rgba(150, 0, 0, 0.8)";
+          ctx$3.fillRect(padding, posY, buttonWidth, buttonHeight);
+
+          // Draw module name
+          ctx$3.fillStyle = "#FFFFFF";
+          ctx$3.fillText(name + (module.enabled ? " [ON]" : " [OFF]"), padding + buttonWidth / 2, posY + buttonHeight / 2);
+
+          // Store the position and size of the button for click handling
+          clickGUIModulePositions.push({name, x: padding, y: posY, width: buttonWidth, height: buttonHeight});
+
+          // If the module is expanded, show settings
+          if (expandedModules[name]) {
+            const settings = module.options;
+            let settingPosY = posY + buttonHeight + 5;
+
+            for (const [settingName, setting] of Object.entries(settings)) {
+              ctx$3.fillStyle = "#333333";
+              ctx$3.fillRect(padding + 20, settingPosY, buttonWidth - 20, buttonHeight);
+
+              // Draw the setting name and value
+              ctx$3.fillStyle = "#FFFFFF";
+              ctx$3.fillText('${settingName}: ${setting[1]}', padding + buttonWidth / 2, settingPosY + buttonHeight / 2);
+
+              // Store the position for setting interaction
+              clickGUIModulePositions.push({name, settingName, x: padding + 20, y: settingPosY, width: buttonWidth - 20, height: buttonHeight});
+
+              settingPosY += buttonHeight + 5;
+            }
+          }
+
+          posY += buttonHeight + padding; // Move to the next button position
+        }
+
+        // Store the positions globally so the event listener can access them
+        window.clickGUIModulePositions = clickGUIModulePositions;
+      }
     }
     `,
   );
+
+  // Add a click event listener to handle button clicks for the ClickGUI
+  window.addEventListener("click", function (e) {
+    const rect = ctx$3.canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    // Check if the click is inside any of the ClickGUI buttons or settings
+    for (const {
+      name,
+      settingName,
+      x,
+      y,
+      width,
+      height,
+    } of window.clickGUIModulePositions) {
+      if (
+        mouseX >= x &&
+        mouseX <= x + width &&
+        mouseY >= y &&
+        mouseY <= y + height
+      ) {
+        const module = modules[name];
+
+        if (module) {
+          if (settingName) {
+            // Handle setting change (e.g., toggle booleans, adjust numbers)
+            const setting = module.options[settingName];
+            if (setting[0] === Boolean) {
+              setting[1] = !setting[1]; // Toggle boolean
+            } else if (setting[0] === Number) {
+              setting[1] += 1; // Increment number (for example)
+            }
+          } else {
+            // Toggle module if it's a normal click
+            module.toggle();
+          }
+        }
+        break;
+      }
+    }
+  });
+
+  // Add a right-click event listener to expand/collapse module settings
+  window.addEventListener("contextmenu", function (e) {
+    e.preventDefault(); // Prevent the default context menu
+    const rect = ctx$3.canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    // Check if the right-click is inside any of the module buttons
+    for (const {
+      name,
+      x,
+      y,
+      width,
+      height,
+    } of window.clickGUIModulePositions) {
+      if (
+        !name ||
+        mouseX < x ||
+        mouseX > x + width ||
+        mouseY < y ||
+        mouseY > y + height
+      )
+        continue;
+
+      const module = modules[name];
+      if (module) {
+        // Toggle expansion of the module's settings
+        window.expandedModules = window.expandedModules || {};
+        window.expandedModules[name] = !window.expandedModules[name];
+      }
+      break;
+    }
+  });
 
   // HOOKS
   addReplacement(
@@ -964,6 +1093,16 @@ function modifyCode(text) {
 				}
 				return new Vector3$1(0, 0, 0);
 			}
+
+			// ClickGUI
+			new Module("ClickGUI", function(callback) {
+      if (callback) {
+        // Initialize ClickGUI logic here
+        // You can use canvas or HTML elements to render the GUI
+        openClickGUI();
+      } else {
+        closeClickGUI();
+      }
     });
 
 
@@ -1023,7 +1162,7 @@ function modifyCode(text) {
 						lastjump = player$1.onGround ? 0 : lastjump;
 						player$1.motion.x = dir.x;
 						player$1.motion.z = dir.z;
-						player$1.motion.y = player$1.onGround && dir.length() > 0 && speedauto[1] ? speedjump[1] : player$1.motion.y < 0 ? player$1.motion.y *= 1.5 : player$1.motion.y;
+						player$1.motion.y = player$1.onGround && dir.length() > 0 && speedauto[1] ? speedjump[1] : player$1.motion.y;
 					};
 				}
 				else delete tickLoop["Speed"];
